@@ -23,7 +23,7 @@ const EditarTorneoModal = ({ open, onClose, torneoId, onUpdate }) => {
   useEffect(() => {
     if (open && torneoId) {
       setLoading(true);
-      axios.get(`http://localhost:5000/api/torneos/${torneoId}`)
+      axios.get(`https://mosssportfinal-production.up.railway.app/api/torneos/${torneoId}`)
         .then(response => {
           const torneoData = response.data;
 
@@ -49,7 +49,7 @@ const EditarTorneoModal = ({ open, onClose, torneoId, onUpdate }) => {
 
   useEffect(() => {
     setIsLoadingCategorias(true);
-    axios.get('http://localhost:5000/api/categorias/categorias')
+    axios.get('https://mosssportfinal-production.up.railway.app/api/categorias/categorias')
       .then(response => {
         setAllCategorias(response.data);
         setIsLoadingCategorias(false);
@@ -133,7 +133,7 @@ const EditarTorneoModal = ({ open, onClose, torneoId, onUpdate }) => {
 
       // Asegúrate de que las categorías no sean null, siempre se envía como un array (puede estar vacío)
       await axios.put(
-        `http://localhost:5000/api/torneos/${torneoId}`,
+        `https://mosssportfinal-production.up.railway.app/api/torneos/${torneoId}`,
         {
           ...torneo,
           categorias: categorias || [],  // Asegura que categorias sea un array vacío si es null

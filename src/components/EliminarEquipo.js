@@ -11,7 +11,7 @@ const EliminarEquipo = () => {
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/equipos');
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/equipos');
         setEquipos(response.data); // Guardar los equipos en el estado
       } catch (error) {
         console.error('Error al obtener los equipos:', error);
@@ -29,7 +29,7 @@ const EliminarEquipo = () => {
     }
 
     try {
-      const response = await axios.delete(`http://localhost:5000/api/equipos/${equipoId}`);
+      const response = await axios.delete(`https://mosssportfinal-production.up.railway.app/api/equipos/${equipoId}`);
       if (response.status === 200) {
         setMensaje('Equipo eliminado con éxito.');
         // Filtrar el equipo eliminado y actualizar la lista

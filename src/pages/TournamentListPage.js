@@ -11,7 +11,7 @@ const TournamentListPage = () => {
   useEffect(() => {
     const fetchTorneos = async () => {
       try {
-        const response = await axios.get('mosssportfinal-production.up.railway.app/api/torneos');
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/torneos');
         setTorneos(response.data); // Guardar los torneos en el estado
       } catch (err) {
         setError('Error al obtener los torneos.');

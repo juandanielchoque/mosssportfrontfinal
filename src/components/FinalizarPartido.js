@@ -16,7 +16,7 @@ const FinalizarPartido = ({ open, onClose, partido, onUpdate }) => {
     }
 
     axios
-      .put(`http://localhost:5000/api/partidos/${partido.id}`, actualizacionPartido)
+      .put(`https://mosssportfinal-production.up.railway.app/api/partidos/${partido.id}`, actualizacionPartido)
       .then((response) => {
         onUpdate(response.data); // Actualizar el partido en el estado del componente padre
         onClose(); // Cerrar el modal

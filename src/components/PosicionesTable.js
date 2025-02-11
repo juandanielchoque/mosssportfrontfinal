@@ -6,7 +6,7 @@ const PosicionesTable = ({ categoriaId }) => {
 
   useEffect(() => {
     // Obtener las posiciones de los equipos en la categoría
-    axios.get(`http://localhost:5000/api/categorias/${categoriaId}/posiciones`)
+    axios.get(`https://mosssportfinal-production.up.railway.app/api/categorias/${categoriaId}/posiciones`)
       .then(response => {
         setPosiciones(response.data);
       })

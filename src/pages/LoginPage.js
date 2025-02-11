@@ -17,17 +17,23 @@ const LoginPage = () => {
     console.log('Intentando iniciar sesión con:', { email, password });
 
     try {
-        const response = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
-            headers: { 'Content-Type': 'application/json' }
+        const response = await axios.post('https://mosssportfinal-production.up.railway.app/api/auth/login', {
+            email,
+            password
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         console.log('Respuesta completa del servidor:', response);
 
+        // Corrección importante: Verificar el código de estado HTTP
         if (response.status === 200) {
-            const { success, token, user, message } = response.data;
+            const { success, token, user, message } = response.data; // Incluir message
             console.log('Datos extraídos:', { success, token, user, message });
 
-            if (success === true) { // Asegurar que es un booleano
+            if (success) { // Verificar directamente el valor booleano 'success'
                 console.log('Token recibido:', token);
                 console.log('Usuario recibido:', user);
 
@@ -37,23 +43,21 @@ const LoginPage = () => {
 
                 navigate(user.rol === 'administrador' ? '/admin-dashboard' : '/user-dashboard');
             } else {
-                console.log('Error del backend:', message);
-                setError(message || 'Error en el inicio de sesión.');
+                console.log('Error del backend:', message); // Mostrar el mensaje del backend
+                setError(message || 'Error en el inicio de sesión.'); // Usar el mensaje del backend o un mensaje genérico.
             }
         } else {
+            // Manejar otros códigos de estado HTTP, como 401 (No autorizado) o 500 (Error del servidor)
             console.error(`Error en la solicitud: Código de estado ${response.status}`);
             setError('Error en la solicitud al servidor.');
         }
+
     } catch (err) {
         console.error('Error completo:', err);
-        if (err.response) {
-            console.error('Error del servidor:', err.response.status, err.response.data);
-            setError(err.response.data.message || 'Error al iniciar sesión');
-        } else {
-            setError('No se pudo conectar con el servidor');
-        }
+        console.error('Respuesta del error:', err.response?.data);
+        setError(err.response?.data?.message || 'Error al iniciar sesión');
     }
-  };
+};
 
   return (
     <div style={styles.container}>
@@ -144,6 +148,12 @@ const styles = {
     fontSize: '1rem',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
+  },
+  loginButtonHover: {
+    backgroundColor: '#0056b3',
+  },
+  registerButtonHover: {
+    backgroundColor: '#565e64',
   },
   error: {
     color: '#ff4d4f',

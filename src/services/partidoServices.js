@@ -172,7 +172,7 @@ const subirEvidencia = async (evidenciaData) => {
     if (!window.evidenciasEnviadas) window.evidenciasEnviadas = new Set();
     window.evidenciasEnviadas.add(claveUnica);
 
-    const response = await axios.post('http://localhost:5000/api/evidencias', evidenciaData, {
+    const response = await axios.post('https://mosssportfinal-production.up.railway.app/api/evidencias', evidenciaData, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -221,7 +221,7 @@ const crearCompetenciaIndividual = async (competenciaData) => {
 
 const verificarEvidenciaExistente = async (partidoId) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/evidencias/verificar/${partidoId}`);
+    const response = await axios.get(`https://mosssportfinal-production.up.railway.app/api/evidencias/verificar/${partidoId}`);
     return response.data.existe; 
   } catch (error) {
     console.error('Error al verificar evidencia existente:', error);

@@ -48,12 +48,12 @@ const VerPartidos = () => {
           categoriasRes,
         ] = await Promise.all([
           obtenerEquipos(),
-          fetch("http://localhost:5000/api/partidos").then((res) => res.json()),
-          fetch("http://localhost:5000/api/competicion").then((res) => res.json()),
-          fetch("http://localhost:5000/api/competicion/resultados").then((res) => res.json()),
-          fetch("http://localhost:5000/api/torneos").then((res) => res.json()),
-          fetch("http://localhost:5000/api/disciplinas").then((res) => res.json()),
-          fetch("http://localhost:5000/api/categorias").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/partidos").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/competicion").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/competicion/resultados").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/torneos").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/disciplinas").then((res) => res.json()),
+          fetch("https://mosssportfinal-production.up.railway.app/categorias").then((res) => res.json()),
         ]);
 
         console.log('✅ Datos cargados exitosamente:', {

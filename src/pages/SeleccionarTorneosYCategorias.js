@@ -16,7 +16,7 @@ const SeleccionarTorneosYCategorias = () => {
   useEffect(() => {
     const fetchTorneos = async () => {
       try {
-        const response = await axios.get('mosssportfinal-production.up.railway.app/api/torneos');
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/torneos');
         setTorneos(response.data);
       } catch (error) {
         setError('Hubo un error al obtener los torneos.');
@@ -25,7 +25,7 @@ const SeleccionarTorneosYCategorias = () => {
 
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('mosssportfinal-production.up.railway.app/api/categorias/categorias');
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/categorias/categorias');
         setCategorias(response.data);
       } catch (error) {
         setError('Hubo un error al obtener las categorías.');
@@ -102,7 +102,7 @@ const SeleccionarTorneosYCategorias = () => {
 
       for (const { torneoId, categorias } of payload) {
         await axios.post(
-          `mosssportfinal-production.up.railway.app/api/torneos/${torneoId}/categorias`,
+          `https://mosssportfinal-production.up.railway.app/api/torneos/${torneoId}/categorias`,
           { torneoId, categorias },
           {
             headers: {
@@ -127,7 +127,7 @@ const SeleccionarTorneosYCategorias = () => {
     }
 
     try {
-      const response = await axios.post('mosssportfinal-production.up.railway.app/api/categorias/categorias', {
+      const response = await axios.post('https://mosssportfinal-production.up.railway.app/api/categorias/categorias', {
         nombre: newCategoria,
       });
       setCategorias((prevCategorias) => [...prevCategorias, response.data]);
@@ -145,7 +145,7 @@ const SeleccionarTorneosYCategorias = () => {
     }
 
     try {
-      const response = await axios.put(`mosssportfinal-production.up.railway.app/api/categorias/categorias/${editCategoria.id}`, {
+      const response = await axios.put(`https://mosssportfinal-production.up.railway.app/api/categorias/categorias/${editCategoria.id}`, {
         nombre: editCategoria.nombre,
       });
       setCategorias((prevCategorias) =>
@@ -162,7 +162,7 @@ const SeleccionarTorneosYCategorias = () => {
 
   const handleDeleteCategoria = async (id) => {
     try {
-      await axios.delete(`mosssportfinal-production.up.railway.app/api/categorias/categorias/${id}`);
+      await axios.delete(`https://mosssportfinal-production.up.railway.app/api/categorias/categorias/${id}`);
       setCategorias((prevCategorias) => prevCategorias.filter((categoria) => categoria.id !== id));
       setSuccess('Categoría eliminada correctamente.');
     } catch (error) {

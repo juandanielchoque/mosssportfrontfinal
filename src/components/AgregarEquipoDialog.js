@@ -129,7 +129,7 @@ const AgregarEquipoDialog = ({ open, onClose, setNuevoEquipo, onAgregarEquipo })
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/equipos', equiposData);
+      const response = await axios.post('https://mosssportfinal-production.up.railway.app/api/equipos', equiposData);
       onClose(); // Cerrar el diálogo
       setFormData({ nombreEquipo: '', email: '' }); // Limpiar el formulario
       setCategoriasSeleccionadas([]);

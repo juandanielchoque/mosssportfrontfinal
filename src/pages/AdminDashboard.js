@@ -82,16 +82,16 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const statsResponse = await axios.get(
-          "http://localhost:5000/api/torneos/estadisticas"
+          "https://mosssportfinal-production.up.railway.app/api/torneos/estadisticas"
         );
         const torneosResponse = await axios.get(
-          "http://localhost:5000/api/torneos"
+          "https://mosssportfinal-production.up.railway.app/api/torneos"
         );
         const equiposResponse = await axios.get(
-          "http://localhost:5000/api/equipos"
+          "https://mosssportfinal-production.up.railway.app/api/equipos"
         );
         const partidosResponse = await axios.get(
-          "http://localhost:5000/api/partidos"
+          "https://mosssportfinal-production.up.railway.app/api/partidos"
         );
   
 
@@ -129,7 +129,8 @@ const AdminDashboard = () => {
 
   const eliminarEquipo = async (equipoId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/equipos/${equipoId}`);
+      await axios.delete(`https://mosssportfinal-production.up.railway.app
+/api/equipos/${equipoId}`);
       setEquipos(equipos.filter((equipo) => equipo.id !== equipoId));
     } catch (error) {
       console.error("Error al eliminar el equipo:", error);
@@ -180,7 +181,8 @@ const AdminDashboard = () => {
 
   const handleDeleteTorneo = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/torneos/${torneoToDelete}`);
+      await axios.delete(`https://mosssportfinal-production.up.railway.app
+/api/torneos/${torneoToDelete}`);
       setTorneos(torneos.filter((torneo) => torneo.id !== torneoToDelete));
       setOpenDeleteModal(false);
       setTorneoToDelete(null);
@@ -202,7 +204,8 @@ const AdminDashboard = () => {
   const fetchPosiciones = async (idTorneo) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/torneos/${idTorneo}/posiciones`
+        `https://mosssportfinal-production.up.railway.app
+/api/torneos/${idTorneo}/posiciones`
       );
       setPosiciones(response.data);
     } catch (error) {
@@ -235,7 +238,7 @@ const AdminDashboard = () => {
 
   const handleVerJugadores = async (equipoId) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/jugadores");
+      const response = await axios.get("https://mosssportfinal-production.up.railway.app/api/jugadores");
       const jugadoresEquipo = response.data.filter(
         (jugador) => jugador.equipo_id === equipoId
       );
@@ -284,10 +287,10 @@ const AdminDashboard = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/equipos", nuevoEquipo);
+      await axios.post("https://mosssportfinal-production.up.railway.app/api/equipos", nuevoEquipo);
       handleCerrarFormularioEquipo();
       const equiposResponse = await axios.get(
-        "http://localhost:5000/api/equipos"
+        "https://mosssportfinal-production.up.railway.app/api/equipos"
       );
       setEquipos(equiposResponse.data);
     } catch (error) {

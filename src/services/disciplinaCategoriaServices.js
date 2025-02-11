@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/disciplina-categorias';
+const API_URL = 'https://mosssportfinal-production.up.railway.app/api/disciplina-categorias';
 
 export const asignarCategoriaADisciplina = async (disciplinaId, categoriaId) => {
   try {

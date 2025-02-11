@@ -13,7 +13,7 @@ const Estadisticas = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/torneos/estadisticas');
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/torneos/estadisticas');
         setStats(response.data);
       } catch (error) {
         console.error('Error al obtener estadísticas:', error);

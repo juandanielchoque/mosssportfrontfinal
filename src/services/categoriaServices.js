@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/categorias';
+const API_URL = 'https://mosssportfinal-production.up.railway.app/api/categorias';
 
 export const obtenerCategorias = async () => {
   try {

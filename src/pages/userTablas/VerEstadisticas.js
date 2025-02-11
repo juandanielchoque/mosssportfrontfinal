@@ -1,10 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Container, Button, Grid, CircularProgress } from '@mui/material';
+import { Box, Typography, Container, Button, Grid, CircularProgress, styled } from '@mui/material';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TablaDeportes from './TablaDeportes';
 import { obtenerDisciplinas } from '../../services/disciplinasServices';
 import { obtenerCategoriasPorDisciplina } from '../../services/disciplinaCategoriaServices';
 import { obtenerEquipos } from '../../services/estadisticaServices';
+
+// Estilos de componentes
+const StyledContainer = styled(Container)(({ theme }) => ({
+    backgroundColor: '#111',
+    color: '#eee',
+    minHeight: '100vh',
+    padding: theme.spacing(4),
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+    backgroundColor: '#1a1a1a',
+    borderRadius: '8px',
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    '&:hover': {
+        transform: 'scale(1.02)',
+        boxShadow: '0px 0px 10px rgba(0, 188, 212, 0.3)',
+    },
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+    color: '#eee',
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+    backgroundColor: '#00bcd4',
+    color: '#111',
+    '&:hover': {
+        backgroundColor: '#00acc1',
+    },
+}));
+
+const StyledGridItem = styled(Grid)(({ theme }) => ({
+    marginBottom: theme.spacing(2),
+}));
+
+const LoadingContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#111',
+}));
+
+const ErrorContainer = styled(Container)(({ theme }) => ({
+    textAlign: 'center',
+    marginTop: theme.spacing(4),
+}));
+
+const ErrorTypography = styled(Typography)(({ theme }) => ({
+    color: '#f44336',
+}));
 
 const VerEstadisticas = () => {
     const [categorias, setCategorias] = useState([]);
@@ -27,15 +81,14 @@ const VerEstadisticas = () => {
 
                 const equiposArray = Array.isArray(equiposResponse) ? equiposResponse : [];
 
-                // Asociar disciplinas con categorías
                 for (const disciplina of disciplinasData) {
                     try {
                         const categoriasAsociadas = await obtenerCategoriasPorDisciplina(disciplina.id);
                         categoriasAsociadas.forEach(categoria => {
                             if (!categoriasMap.has(categoria.id)) {
-                                categoriasMap.set(categoria.id, { 
-                                    ...categoria, 
-                                    disciplinas: [], 
+                                categoriasMap.set(categoria.id, {
+                                    ...categoria,
+                                    disciplinas: [],
                                 });
                             }
                             categoriasMap.get(categoria.id).disciplinas.push(disciplina);
@@ -77,25 +130,67 @@ const VerEstadisticas = () => {
         }
     };
 
-    const equiposFiltrados = todosLosEquipos.filter(equipo => 
+    const equiposFiltrados = todosLosEquipos.filter(equipo =>
         selectedCategoria && equipo.categoria_id === selectedCategoria.id
     );
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+    return (
+        <StyledContainer maxWidth="xl">
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+                <StyledTypography variant="h4">
+                    {selectedDisciplina
+                        ? `${selectedCategoria.nombre} - ${selectedDisciplina.nombre}`
+                        : selectedCategoria
+                            ? selectedCategoria.nombre
+                            : 'Estadísticas'}
+                </StyledTypography>
+                <StyledButton variant="outlined" startIcon={<ArrowBackIcon />} onClick={handleBackClick}>
+                    Retroceder
+                </StyledButton>
             </Box>
-        );
-    }
 
-    if (error) {
-        return (
-            <Container maxWidth="xl">
-                <Box sx={{ mt: 4, textAlign: 'center' }}>
-                    <Typography variant="h6" color="error">
+            {selectedDisciplina ? (
+                <TablaDeportes
+                    categoria={selectedCategoria}
+                    disciplina={selectedDisciplina}
+                    equipos={equiposFiltrados}
+                />
+            ) : selectedCategoria ? (
+                <Grid container spacing={2}>
+                    {selectedCategoria.disciplinas.map((disciplina) => (
+                        <StyledGridItem item xs={12} sm={6} md={4} key={disciplina.id}>
+                            <StyledBox onClick={() => handleDisciplinaClick(disciplina)}>
+                                <StyledTypography variant="h6">{disciplina.nombre}</StyledTypography>
+                            </StyledBox>
+                        </StyledGridItem>
+                    ))}
+                </Grid>
+            ) : (
+                <Grid container spacing={2}>
+                    {categorias.map((categoria) => (
+                        <StyledGridItem item xs={12} sm={6} md={4} key={categoria.id}>
+                            <StyledBox onClick={() => handleCategoriaClick(categoria)}>
+                                <StyledTypography variant="h6">{categoria.nombre}</StyledTypography>
+                                <StyledTypography variant="body2">
+                                    Disciplinas disponibles: {categoria.disciplinas.length}
+                                </StyledTypography>
+                            </StyledBox>
+                        </StyledGridItem>
+                    ))}
+                </Grid>
+            )}
+
+            {loading && (
+                <LoadingContainer>
+                    <CircularProgress />
+                </LoadingContainer>
+            )}
+
+            {error && (
+                <ErrorContainer maxWidth="xl">
+                    <ErrorTypography variant="h6" color="error">
                         Error: {error}
-                    </Typography>
+                    </ErrorTypography>
                     <Button
                         variant="contained"
                         color="primary"
@@ -104,58 +199,9 @@ const VerEstadisticas = () => {
                     >
                         Reintentar
                     </Button>
-                </Box>
-            </Container>
-        );
-    }
-
-    return (
-        <Container maxWidth="xl">
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-                <Typography variant="h4">
-                    {selectedDisciplina 
-                        ? `${selectedCategoria.nombre} - ${selectedDisciplina.nombre}`
-                        : selectedCategoria
-                            ? selectedCategoria.nombre
-                            : 'Estadísticas'
-                    }
-                </Typography>
-                <Button variant="outlined" startIcon={<ArrowBackIcon />} onClick={handleBackClick}>
-                    Retroceder
-                </Button>
-            </Box>
-
-            {selectedDisciplina ? (
-                    <TablaDeportes 
-                    categoria={selectedCategoria} 
-                    disciplina={selectedDisciplina}
-                    equipos={equiposFiltrados}
-                />
-            ) : selectedCategoria ? (
-                <Grid container spacing={2}>
-                    {selectedCategoria.disciplinas.map((disciplina) => (
-                        <Grid item xs={12} sm={6} md={4} key={disciplina.id}>
-                            <Box onClick={() => handleDisciplinaClick(disciplina)} sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2, cursor: 'pointer' }}>
-                                <Typography variant="h6">{disciplina.nombre}</Typography>
-                            </Box>
-                        </Grid>
-                    ))}
-                </Grid>
-            ) : (
-                <Grid container spacing={2}>
-                    {categorias.map((categoria) => (
-                        <Grid item xs={12} sm={6} md={4} key={categoria.id}>
-                            <Box onClick={() => handleCategoriaClick(categoria)} sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2, cursor: 'pointer' }}>
-                                <Typography variant="h6">{categoria.nombre}</Typography>
-                                <Typography variant="body2">
-                                    Disciplinas disponibles: {categoria.disciplinas.length}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                    ))}
-                </Grid>
+                </ErrorContainer>
             )}
-        </Container>
+        </StyledContainer>
     );
 };
 

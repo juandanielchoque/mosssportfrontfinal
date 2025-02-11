@@ -1,161 +1,161 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  Paper,
-  Avatar,
-  CircularProgress,
-  Button
+    Box,
+    Typography,
+    Container,
+    Grid,
+    Paper,
+    Avatar,
+    CircularProgress,
+    Button,
+    styled
 } from '@mui/material';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { obtenerEquipos } from '../../services/equipoServices';
 import JugadoresDialog from '../../components/VerJugadoresDialog';
 
-const VerEquipos = () => {
-  const [equipos, setEquipos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedEquipo, setSelectedEquipo] = useState(null);
-  const [openJugadoresDialog, setOpenJugadoresDialog] = useState(false);
+// Estilos de componentes
+const StyledContainer = styled(Container)({
+    backgroundColor: '#111',
+    color: '#eee',
+    minHeight: '100vh',
+    padding: '32px',
+});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const equiposRes = await obtenerEquipos();
-        setEquipos(equiposRes.data || []);
-        
-        const categoriasUnicas = [
-          ...new Set(equiposRes.data.map(equipo => equipo.categoria_nombre))
-        ];
-        setCategorias(categoriasUnicas);
-      } catch (error) {
-        console.error("Error al obtener los datos:", error);
-      } finally {
-        setLoading(false);
-      }
+const StyledTypography = styled(Typography)({
+    color: '#eee',
+});
+
+const StyledButton = styled(Button)({
+    backgroundColor: '#00bcd4',
+    color: '#111',
+    '&:hover': {
+        backgroundColor: '#00acc1',
+    },
+});
+
+const StyledPaper = styled(Paper)({
+    backgroundColor: '#1a1a1a',
+    padding: '16px',
+    minWidth: 200,
+});
+
+const StyledAvatar = styled(Avatar)({
+    width: 50,
+    height: 50,
+    borderRadius: 0,
+    backgroundColor: '#333',
+});
+
+const StyledCategoryAvatar = styled(Avatar)({
+    width: 100,
+    height: 100,
+    borderRadius: 0,
+    marginTop: '16px',
+    backgroundColor: '#333',
+});
+
+const StyledTeamBox = styled(Box)({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px',
+    padding: '16px',
+    border: '1px solid #333',
+    borderRadius: 2,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease, transform 0.2s ease',
+    '&:hover': {
+        backgroundColor: '#222',
+        transform: 'translateY(-2px)',
+    },
+});
+
+const LoadingContainer = styled(Box)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#111',
+});
+
+const VerEquipos = () => {
+    const [equipos, setEquipos] = useState([]);
+    const [categorias, setCategorias] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedEquipo, setSelectedEquipo] = useState(null);
+    const [openJugadoresDialog, setOpenJugadoresDialog] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const equiposRes = await obtenerEquipos();
+                setEquipos(equiposRes.data || []);
+
+                const categoriasUnicas = [...new Set(equiposRes.data.map(e => e.categoria_nombre))];
+                setCategorias(categoriasUnicas);
+            } catch (error) {
+                console.error("Error al obtener los datos:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const handleEquipoClick = (equipo) => {
+        setSelectedEquipo(equipo);
+        setOpenJugadoresDialog(true);
     };
 
-    fetchData();
-  }, []);
+    const handleCloseJugadoresDialog = () => {
+        setOpenJugadoresDialog(false);
+        setSelectedEquipo(null);
+    };
 
-  const handleEquipoClick = (equipo) => {
-    setSelectedEquipo(equipo);
-    setOpenJugadoresDialog(true);
-  };
+    const renderLogo = (logoBase64) => {
+        if (!logoBase64) return <StyledAvatar>N/A</StyledAvatar>;
+        return <StyledAvatar src={`data:image/jpeg;base64,${logoBase64}`} alt="Logo del equipo" onError={(e) => e.target.src = ''} />;
+    };
 
-  const handleCloseJugadoresDialog = () => {
-    setOpenJugadoresDialog(false);
-    setSelectedEquipo(null);
-  };
-
-  const renderLogo = (logoBase64) => {
-    if (!logoBase64) {
-      return <Avatar sx={{ width: 50, height: 50, borderRadius: 0 }}>N/A</Avatar>;
+    if (loading) {
+        return (
+            <LoadingContainer>
+                <CircularProgress />
+            </LoadingContainer>
+        );
     }
 
-    try {
-      return (
-        <Avatar
-          src={`data:image/jpeg;base64,${logoBase64}`}
-          alt="Logo del equipo"
-          sx={{ width: 50, height: 50, borderRadius: 0 }}
-          onError={(e) => {
-            console.error('Error al cargar la imagen');
-            e.target.src = '';
-            e.target.onerror = null;
-          }}
-        />
-      );
-    } catch (error) {
-      console.error('Error al renderizar logo:', error);
-      return <Avatar sx={{ width: 50, height: 50, borderRadius: 0 }}>E</Avatar>;
-    }
-  };
-
-  if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress />
-      </Box>
+        <StyledContainer maxWidth="xl">
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                <StyledTypography variant="h4">Equipos</StyledTypography>
+                <StyledButton variant="outlined" startIcon={<ArrowBackIcon />} onClick={() => window.history.back()}>
+                    Retroceder
+                </StyledButton>
+            </Box>
+
+            {categorias.map(categoria => (
+                <Box key={categoria} display="flex" alignItems="center" gap={2} mb={3}>
+                    <StyledPaper elevation={3}>
+                        <StyledTypography variant="h6" align="center">{categoria}</StyledTypography>
+                        <StyledCategoryAvatar src={`ruta_a_imagen_de_categoria/${categoria}`} alt={`Imagen de ${categoria}`} />
+                    </StyledPaper>
+                    <Grid container spacing={2}>
+                        {equipos.filter(equipo => equipo.categoria_nombre === categoria).map(equipo => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={equipo.id}>
+                                <StyledTeamBox onClick={() => handleEquipoClick(equipo)}>
+                                    {renderLogo(equipo.logo)}
+                                    <StyledTypography variant="body1">{equipo.nombre}</StyledTypography>
+                                </StyledTeamBox>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            ))}
+
+            <JugadoresDialog open={openJugadoresDialog} onClose={handleCloseJugadoresDialog} equipoId={selectedEquipo?.id} />
+        </StyledContainer>
     );
-  }
-
-  return (
-    <Container maxWidth="xl">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4">Equipos</Typography>
-        <Button
-          variant="outlined"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => window.history.back()}
-        >
-          Retroceder
-        </Button>
-      </Box>
-
-      {categorias.map(categoria => (
-        <Box key={categoria} display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
-          <Paper elevation={3} sx={{ p: 2, minWidth: 200, backgroundColor: '#f5f5f5' }}>
-            <Typography variant="h6" align="center">{categoria}</Typography>
-            <Avatar 
-              src={`ruta_a_imagen_de_categoria/${categoria}`} 
-              alt={`Imagen de ${categoria}`}
-              sx={{ width: 100, height: 100, mt: 2, borderRadius: 0 }}
-            />
-          </Paper>
-          <Grid container spacing={2}>
-            {equipos
-              .filter(equipo => equipo.categoria_nombre === categoria)
-              .map(equipo => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={equipo.id}>
-                  <Box 
-                    display="flex" 
-                    alignItems="center" 
-                    gap={2} 
-                    sx={{ 
-                      p: 2, 
-                      border: '1px solid #ddd', 
-                      borderRadius: 2,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: '#f5f5f5',
-                        transform: 'translateY(-2px)',
-                        transition: 'all 0.2s ease-in-out'
-                      }
-                    }}
-                    onClick={() => handleEquipoClick(equipo)}
-                  >
-                    {renderLogo(equipo.logo)}
-                    <Typography variant="body1">{equipo.nombre}</Typography>
-                  </Box>
-                </Grid>
-              ))}
-          </Grid>
-        </Box>
-      ))}
-
-      {/* Dialog para ver jugadores */}
-      <JugadoresDialog
-        open={openJugadoresDialog}
-        onClose={handleCloseJugadoresDialog}
-        equipoId={selectedEquipo?.id}
-      />
-    </Container>
-  );
 };
 
 export default VerEquipos;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/api/competicion';
+const BASE_URL = 'https://mosssportfinal-production.up.railway.app/api/competicion';
 
 export const obtenerCompetenciasIndividuales = async () => {
     try {
@@ -39,7 +39,7 @@ export const obtenerEquiposDeCompetencia = async (competenciaId) => {
 
 export const obtenerCategoriasPorDisciplina = async (disciplinaId) => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/disciplina-categorias/${disciplinaId}`);
+        const response = await axios.get(`https://mosssportfinal-production.up.railway.app/api/disciplina-categorias/${disciplinaId}`);
         return {
             success: true,
             data: response.data.data || response.data
@@ -92,7 +92,7 @@ export const obtenerEquipos = async () => {
         const config = {
             headers: { Authorization: `Bearer ${token}` }
         };
-        const response = await axios.get('http://localhost:5000/api/equipos', config);
+        const response = await axios.get('https://mosssportfinal-production.up.railway.app/api/equipos', config);
         const data = Array.isArray(response.data) ? response.data : 
                     Array.isArray(response.data.data) ? response.data.data : [];
         return {
@@ -111,7 +111,7 @@ export const obtenerEquipos = async () => {
 
 export const obtenerEquiposPorCategoria = async (categoriaId) => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/equipos/categoria_id=${categoriaId}`);
+        const response = await axios.get(`https://mosssportfinal-production.up.railway.app/api/equipos/categoria_id=${categoriaId}`);
         return {
             success: true,
             data: response.data.data || response.data

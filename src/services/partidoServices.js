@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/partidos';
+const API_URL = 'https://mosssportfinal-production.up.railway.app';
 
 const getAuthConfig = () => {
   const token = localStorage.getItem('token');
@@ -100,7 +100,7 @@ const crearPartido = async (partido) => {
     if (!window.partidosEnviados) window.partidosEnviados = new Set();
     window.partidosEnviados.add(claveUnica);
 
-    const response = await axios.post("http://localhost:5000/api/partidos", partido, {
+    const response = await axios.post("https://mosssportfinal-production.up.railway.app", partido, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -139,7 +139,7 @@ const actualizarPuntuacion = async (partidoId, data) => {
       return;
     }
 
-    const response = await axios.put(`http://localhost:5000/api/partidos/${partidoId}/puntuacion`, data);
+    const response = await axios.put(`https://mosssportfinal-production.up.railway.app/${partidoId}/puntuacion`, data);
     return response.data;
   } catch (error) {
     console.error("Error al actualizar la puntuación:", error);

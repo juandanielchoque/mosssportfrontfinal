@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = "https://mosssportfinal-production.up.railway.app";
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,23 +17,17 @@ const LoginPage = () => {
     console.log('Intentando iniciar sesión con:', { email, password });
 
     try {
-        const response = await axios.post('https://mosssportfinal-production.up.railway.app/api/auth/login', {
-            email,
-            password
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        const response = await axios.post(`${API_URL}/api/auth/login`, { email, password }, {
+            headers: { 'Content-Type': 'application/json' }
         });
 
         console.log('Respuesta completa del servidor:', response);
 
-        // Corrección importante: Verificar el código de estado HTTP
         if (response.status === 200) {
-            const { success, token, user, message } = response.data; // Incluir message
+            const { success, token, user, message } = response.data;
             console.log('Datos extraídos:', { success, token, user, message });
 
-            if (success) { // Verificar directamente el valor booleano 'success'
+            if (success === true) { // Asegurar que es un booleano
                 console.log('Token recibido:', token);
                 console.log('Usuario recibido:', user);
 
@@ -41,21 +37,23 @@ const LoginPage = () => {
 
                 navigate(user.rol === 'administrador' ? '/admin-dashboard' : '/user-dashboard');
             } else {
-                console.log('Error del backend:', message); // Mostrar el mensaje del backend
-                setError(message || 'Error en el inicio de sesión.'); // Usar el mensaje del backend o un mensaje genérico.
+                console.log('Error del backend:', message);
+                setError(message || 'Error en el inicio de sesión.');
             }
         } else {
-            // Manejar otros códigos de estado HTTP, como 401 (No autorizado) o 500 (Error del servidor)
             console.error(`Error en la solicitud: Código de estado ${response.status}`);
             setError('Error en la solicitud al servidor.');
         }
-
     } catch (err) {
         console.error('Error completo:', err);
-        console.error('Respuesta del error:', err.response?.data);
-        setError(err.response?.data?.message || 'Error al iniciar sesión');
+        if (err.response) {
+            console.error('Error del servidor:', err.response.status, err.response.data);
+            setError(err.response.data.message || 'Error al iniciar sesión');
+        } else {
+            setError('No se pudo conectar con el servidor');
+        }
     }
-};
+  };
 
   return (
     <div style={styles.container}>
@@ -146,12 +144,6 @@ const styles = {
     fontSize: '1rem',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
-  },
-  loginButtonHover: {
-    backgroundColor: '#0056b3',
-  },
-  registerButtonHover: {
-    backgroundColor: '#565e64',
   },
   error: {
     color: '#ff4d4f',
